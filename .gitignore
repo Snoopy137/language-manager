@@ -1,5 +1,6 @@
 # Ignore target directory (build output)
 target/
+REAMDE.md
 
 # Ignore IDE specific files
 nbactions.xml
