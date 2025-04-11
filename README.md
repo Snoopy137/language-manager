@@ -17,7 +17,7 @@ Add the library to your project using Maven or Gradle (instructions coming soon 
 
 Place your resource bundles in the `src/main/resources` folder:
 
-```
+```text
 src/
 └── main/
     └── resources/
