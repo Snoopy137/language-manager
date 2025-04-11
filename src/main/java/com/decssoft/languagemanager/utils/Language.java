@@ -1,6 +1,7 @@
 package com.decssoft.languagemanager.utils;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -20,16 +21,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Language {
 
-    private static final ObjectProperty<ResourceBundle> bundleProperty
-            = new SimpleObjectProperty<>(ResourceBundle.getBundle("language", Locale.ENGLISH));
+    private static ObjectProperty<ResourceBundle> bundleProperty;
 
     /**
      * Gets the current resource bundle being used for language translations.
      *
      * @return the current resource bundle.
      */
-    public static ResourceBundle getBundle() {
-        return bundleProperty.get();
+    public static ResourceBundle getBundle() throws MissingResourceException {
+        System.out.println("------------------- getting bundle ---------------------");
+        try {
+            bundleProperty = new SimpleObjectProperty<>(ResourceBundle.getBundle("language", Locale.CHINA));
+            System.out.println(bundleProperty.get().getLocale());
+            return bundleProperty.get();
+        } catch (MissingResourceException e) {
+            log.warn("""
+            Failed to load the properties file.
+            Make sure a valid resource bundle exists in 'src/main/resources'.
+            Returning null. UI may not display localized text.""");
+            return null;
+        }
     }
 
     /**
@@ -53,7 +64,8 @@ public class Language {
      * @return a `StringBinding` that can be used to bind to a UI element's text
      * property.
      */
-    public static StringBinding bind(String key) {
+    public static StringBinding bind(String key, String optional) {
+        if (bundleProperty.get() == null) return Bindings.createStringBinding(() -> key);
         return Bindings.createStringBinding(() -> {
             ResourceBundle bundle = bundleProperty.get();
             if (bundle.containsKey(key)) {
@@ -61,7 +73,7 @@ public class Language {
                 return bundle.getString(key);
             } else {
                 log.warn("Missing key '{}' in resource bundle", key);
-                return key;  // Returning the key itself in case of missing translation
+                return optional;  // Returning the key itself in case of missing translation
             }
         }, bundleProperty);
     }
@@ -82,24 +94,10 @@ public class Language {
             bundleProperty.set(newBundle);
             log.info("Locale set successfully");
         } catch (Exception e) {
-            log.error("Failed to load resource bundle for locale: {}", locale, e);
+            log.error("""
+                      Failed to load resource bundle for locale: {}.
+                      Make sure a valid resource bundle exists in 'src/main/resources'.""", locale);
         }
-    }
-
-    /**
-     * Sets the language to Spanish (es) by changing the locale.
-     */
-    public static void espanol() {
-        log.debug("Setting language to Spanish");
-        setLocale(Locale.forLanguageTag("es"));
-    }
-
-    /**
-     * Sets the language to English (en) by changing the locale.
-     */
-    public static void english() {
-        log.debug("Setting language to English");
-        setLocale(Locale.ENGLISH);
     }
 
     /**
@@ -128,11 +126,11 @@ public class Language {
                 if (control instanceof Labeled labeled) {
                     String key = field.getName(); // fx:id assumed as key
                     log.debug("Binding text property of labeled control '{}'", key);
-                    labeled.textProperty().bind(Language.bind(key));
+                    labeled.textProperty().bind(Language.bind(key, labeled.getText()));
                 } else if (control instanceof TextInputControl input) {
                     String key = field.getName();
                     log.debug("Binding promptText property of TextInputControl '{}'", key);
-                    input.promptTextProperty().bind(Language.bind(key + ".prompt"));
+                    input.promptTextProperty().bind(Language.bind(key + ".prompt", input.getText()));
                 }
             } catch (IllegalAccessException e) {
                 log.error("Failed to bind control '{}'", field.getName(), e);
