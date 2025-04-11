@@ -7,6 +7,7 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Language Manager</name>
+    <description>JavaFX library for dynamic language switching</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,6 +18,8 @@
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <mainClassName>com.decssoft.languagemanager.LanguageManager</mainClassName>
     </properties>
+    <url>https://github.com/Snoopy137/language-manager</url>
+
     <licenses>
         <license>
             <name>MIT License</name>
@@ -24,6 +27,20 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <id>snoopy137</id>
+            <name>Alan D.</name>
+            <email>alandsn137@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/Snoopy137/language-manager</url>
+        <connection>scm:git:git://github.com/Snoopy137/language-manager.git</connection>
+        <developerConnection>scm:git:ssh://github.com/Snoopy137/language-manager.git</developerConnection>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
