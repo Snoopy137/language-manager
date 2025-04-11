@@ -17,12 +17,14 @@ Add the library to your project using Maven or Gradle (instructions coming soon 
 
 Place your resource bundles in the `src/main/resources` folder:
 
+```
 src/
 └── main/
     └── resources/
         ├── language.properties         # Default (English)
         ├── language_es.properties      # Spanish
         └── language_fr.properties      # French
+```
 
 ## 🚀 Usage
 
