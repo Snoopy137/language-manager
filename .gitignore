@@ -1,0 +1,21 @@
+# Ignore target directory (build output)
+target/
+REAMDE.md
+
+# Ignore IDE specific files
+nbactions.xml
+nb-configuration.xml
+
+# Ignore Maven-specific files
+*.log
+*.class
+*.jar
+*.war
+*.ear
+
+# Ignore any temporary files from OS or editors
+.DS_Store
+Thumbs.db
+
+# Ignore Maven wrapper files (if you use a different Maven installation)
+.mvn/
