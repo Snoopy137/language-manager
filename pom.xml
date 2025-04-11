@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.decssoft.languagemanager</groupId>
+    <groupId>com.decssoft</groupId>
     <artifactId>language-manager</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Language Manager</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>16</maven.compiler.release>
-        <javafx.version>23.0.2</javafx.version>
+        <maven.compiler.release>17</maven.compiler.release>
+        <javafx.version>22</javafx.version>
         <attach.version>4.0.22</attach.version>
-        <gluonfx.plugin.version>1.0.26</gluonfx.plugin.version>
+        <gluonfx.plugin.version>1.0.23</gluonfx.plugin.version>
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <mainClassName>com.decssoft.languagemanager.LanguageManager</mainClassName>
     </properties>
@@ -69,6 +69,7 @@
                 <version>${javafx.plugin.version}</version>
                 <configuration>
                     <mainClass>${mainClassName}</mainClass>
+                    <graalvmHome>/home/alan/Documents/graalvm-java23-linux-amd64-gluon-23+25.1-dev</graalvmHome>  
                 </configuration>
                 <executions>
                     <execution>
@@ -116,31 +117,9 @@
                 <artifactId>gluonfx-maven-plugin</artifactId>
                 <version>${gluonfx.plugin.version}</version>
                 <configuration>
-                    <target>${gluonfx.target}</target>
-                    <attachList>
-                        <list>display</list>
-                        <list>lifecycle</list>
-                        <list>statusbar</list>
-                        <list>storage</list>
-                    </attachList>
                     <mainClass>${mainClassName}</mainClass>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>ios</id>
-            <properties>
-                <gluonfx.target>ios</gluonfx.target>
-            </properties>
-        </profile>
-        <profile>
-            <id>android</id>
-            <properties>
-                <gluonfx.target>android</gluonfx.target>
-            </properties>
-        </profile>
-    </profiles>
 </project>
