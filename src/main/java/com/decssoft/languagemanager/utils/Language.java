@@ -29,9 +29,8 @@ public class Language {
      * @return the current resource bundle.
      */
     public static ResourceBundle getBundle() throws MissingResourceException {
-        System.out.println("------------------- getting bundle ---------------------");
         try {
-            bundleProperty = new SimpleObjectProperty<>(ResourceBundle.getBundle("language", Locale.CHINA));
+            bundleProperty = new SimpleObjectProperty<>(ResourceBundle.getBundle("language", Locale.getDefault()));
             System.out.println(bundleProperty.get().getLocale());
             return bundleProperty.get();
         } catch (MissingResourceException e) {
