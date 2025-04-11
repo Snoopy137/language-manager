@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.decssoft.languagemanager.utils","l":"IgnoreBind"},{"p":"com.decssoft.languagemanager.utils","l":"Language"},{"p":"com.decssoft.languagemanager","l":"LanguageManager"}];updateSearchResults();

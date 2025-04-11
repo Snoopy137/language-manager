@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.decssoft.languagemanager"},{"l":"com.decssoft.languagemanager.utils"}];updateSearchResults();
