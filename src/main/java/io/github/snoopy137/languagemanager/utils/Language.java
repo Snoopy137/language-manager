@@ -1,4 +1,4 @@
-package com.decssoft.languagemanager.utils;
+package io.github.snoopy137.languagemanager.utils;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
