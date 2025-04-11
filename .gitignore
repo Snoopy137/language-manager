@@ -1,7 +1,6 @@
 # Ignore target directory (build output)
 target/
-REAMDE.md
-
+src/main/resources/META-INF/
 # Ignore IDE specific files
 nbactions.xml
 nb-configuration.xml
