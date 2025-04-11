@@ -1,4 +1,4 @@
-package com.decssoft.languagemanager;
+package io.github.snoopy137.languagemanager;
 
 import javafx.application.Application;
 import javafx.application.Platform;
