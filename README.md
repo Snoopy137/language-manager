@@ -68,3 +68,5 @@ Language Manager uses ResourceBundle, SimpleObjectProperty, and Bindings to keep
 📄 License
 
 MIT License
+
+📚 [View Javadocs](https://your-username.github.io/language-manager/)
