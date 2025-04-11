@@ -17,7 +17,13 @@
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <mainClassName>com.decssoft.languagemanager.LanguageManager</mainClassName>
     </properties>
-
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
