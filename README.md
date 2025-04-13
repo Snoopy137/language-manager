@@ -1,4 +1,4 @@
-![Maven Central](https://img.shields.io/maven-central/v/io.github.snoopy137/language-manager)
+[![Maven Central][(https://img.shields.io/maven-central/v/io.github.snoopy137/language-manager)](https://central.sonatype.com/artifact/io.github.snoopy137/language-manager)
 ![License](https://img.shields.io/github/license/snoopy137/language-manager)
 
 # language-manager
