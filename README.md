@@ -1,7 +1,5 @@
-```markdown
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.snoopy137/language-manager)
 ![License](https://img.shields.io/github/license/snoopy137/language-manager)
-```
 
 # language-manager
 **Language Manager** is a JavaFX library that enables **dynamic language switching at runtime**, allowing you to update the application language without needing to refresh the scene.
