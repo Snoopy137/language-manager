@@ -57,7 +57,7 @@ In your FXML controller:
 private Label greeting;
 
 public void initialize() {
-    Language.autoBind(this); // Automatically binds the 'greeting' Label
+    Language.autoBind(this); // Automatically binds the fields with an fx:id
 }
 ```
 
