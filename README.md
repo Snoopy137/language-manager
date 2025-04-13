@@ -1,3 +1,8 @@
+```markdown
+![Maven Central](https://img.shields.io/maven-central/v/io.github.snoopy137/language-manager)
+![License](https://img.shields.io/github/license/snoopy137/language-manager)
+```
+
 # language-manager
 **Language Manager** is a JavaFX library that enables **dynamic language switching at runtime**, allowing you to update the application language without needing to refresh the scene.
 
@@ -11,7 +16,24 @@
 
 ## 📦 Installation
 
-Add the library to your project using Maven or Gradle (instructions coming soon once it's published).
+Add the library to your project using Maven or Gradle
+
+### Maven
+Add the following to your `pom.xml`:
+```xml
+<dependency>
+    <groupId>io.github.snoopy137</groupId>
+    <artifactId>language-manager</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+### Gradle
+Add this to your `build.gradle`:
+```groovy
+dependencies {
+    implementation 'io.github.snoopy137:language-manager:1.0.0'
+}
+```
 
 ## 📁 File Structure
 
@@ -49,7 +71,7 @@ Language.setLocale(Locale.forLanguageTag("es")); // Switch to Spanish
 
 ### 3. Fallback Handling
 
-If the desired language file doesn't exist, the system falls back to the default language.properties. You can customize or log this behavior in your own Language.getBundle() method.
+If the desired language file doesn't exist, the system automatically falls back to the default language.properties. You can customize or log this behavior in your own Language.getBundle() method.
 
 ### 4. Ignore Specific Fields
 
@@ -65,10 +87,24 @@ private Label customLabel;
 
 🔧 Under the Hood
 
-Language Manager uses ResourceBundle, SimpleObjectProperty, and Bindings to keep text in sync with the selected locale — all while avoiding the need to reinitialize scenes.
+Language Manager leverages ResourceBundle, SimpleObjectProperty, and Bindings to keep text in sync with the selected locale — all while avoiding the need to reinitialize scenes.
 
 📄 License
 
 MIT License
 
 📚 [View Javadocs](https://snoopy137.github.io/language-manager/)
+
+## 🤝 Contributing
+
+We welcome contributions! Please fork the repository and submit a pull request with your changes.
+
+## 🐞 Issues
+
+If you encounter any bugs or have feature requests, please open an issue in the [GitHub Issues](https://github.com/snoopy137/language-manager/issues) section.
+
+
+## 🔖 Versioning
+
+We follow [Semantic Versioning](https://semver.org/) for our releases. You can check out the release notes for each version on the [Releases Page](https://github.com/snoopy137/language-manager/releases).
+
