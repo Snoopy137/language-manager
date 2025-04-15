@@ -1,4 +1,4 @@
-package io.github.snoopy137.languagemanager.utils;
+package io.github.snoopy137.languagemanager.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
