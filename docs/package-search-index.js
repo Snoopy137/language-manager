@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.github.snoopy137.languagemanager"},{"l":"io.github.snoopy137.languagemanager.utils"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.github.snoopy137.languagemanager"},{"l":"io.github.snoopy137.languagemanager.annotations"},{"l":"io.github.snoopy137.languagemanager.utils"}];updateSearchResults();
