@@ -1,5 +1,6 @@
 package io.github.snoopy137.languagemanager.utils;
 
+import io.github.snoopy137.languagemanager.annotations.IgnoreBind;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -13,10 +14,10 @@ import javafx.scene.control.TextInputControl;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Utility class to manage language settings and automatic UI binding for JavaFX
- * applications. This class allows setting the locale, dynamically switching
- * languages, and binding UI elements to corresponding language keys in the
- * resource bundle.
+ * @author alan Utility class to manage language settings and automatic UI
+ * binding for JavaFX applications. This class allows setting the locale,
+ * dynamically switching languages, and binding UI elements to corresponding
+ * language keys in the resource bundle.
  */
 @Slf4j
 public class Language {
@@ -101,36 +102,62 @@ public class Language {
 
     /**
      * Automatically binds the text or promptText properties of UI controls
-     * (such as `Label` and `TextInputControl`) in the provided controller
-     * object to corresponding values in the current resource bundle. The method
-     * iterates through all declared fields in the controller, checks if they
-     * are annotated with `@FXML`, and binds their properties to the
-     * corresponding language keys from the resource bundle. Fields annotated
-     * with `@IgnoreBind` are ignored during the binding process.
+     * (such as {@code Label} and {@code TextInputControl}) in the provided
+     * controller object to corresponding values in the current resource bundle.
      *
-     * @param controller the controller object that contains UI controls (such
-     * as labels and text input fields) whose properties will be bound to the
-     * resource bundle.
+     * <p>
+     * This method supports two usage modes:</p>
+     * <ul>
+     * <li><strong>FXML-based:</strong> Fields annotated with {@code @FXML} will
+     * be automatically bound using the field name as the key.</li>
+     * <li><strong>Code-based:</strong> Fields annotated with {@code @Bind} can
+     * be bound programmatically in non-FXML contexts. The key is derived from
+     * the field name.</li>
+     * </ul>
+     *
+     * <p>
+     * Fields annotated with {@code @IgnoreBind} will be ignored during the
+     * binding process.</p>
+     *
+     * @param controller the controller or object containing UI controls whose
+     * properties will be bound to the resource bundle.
      */
     public static void autoBind(Object controller) {
         log.debug("Obtaining declared fields from controller: {}", controller.getClass().getName());
         var fields = controller.getClass().getDeclaredFields();
         log.debug("Obtained {} declared fields", fields.length);
+
         for (var field : fields) {
-            if (!field.isAnnotationPresent(FXML.class)) continue;
-            if (field.isAnnotationPresent(IgnoreBind.class)) continue; // Skip ignored fields
+            boolean isFxml = field.isAnnotationPresent(FXML.class);
+            boolean isManualBind = field.isAnnotationPresent(io.github.snoopy137.languagemanager.annotations.Bind.class);
+
+            if (!isFxml && !isManualBind) continue;
+            if (field.isAnnotationPresent(IgnoreBind.class)) continue;
+
             field.setAccessible(true);
             try {
                 Object control = field.get(controller);
+                if (control == null) continue;
+
+                // Default key: field name
+                String key = field.getName();
+
+                // Use custom key from @Bind if present
+                if (isManualBind) {
+                    var bindAnnotation = field.getAnnotation(io.github.snoopy137.languagemanager.annotations.Bind.class);
+                    if (!bindAnnotation.value().isEmpty()) {
+                        key = bindAnnotation.value();
+                    }
+                }
+
                 if (control instanceof Labeled labeled) {
-                    String key = field.getName(); // fx:id assumed as key
                     log.debug("Binding text property of labeled control '{}'", key);
                     labeled.textProperty().bind(Language.bind(key, labeled.getText()));
                 } else if (control instanceof TextInputControl input) {
-                    String key = field.getName();
-                    log.debug("Binding promptText property of TextInputControl '{}'", key);
+                    log.debug("Binding promptText property of TextInputControl '{}'", key + ".prompt");
                     input.promptTextProperty().bind(Language.bind(key + ".prompt", input.getText()));
                 }
+
             } catch (IllegalAccessException e) {
                 log.error("Failed to bind control '{}'", field.getName(), e);
             }
