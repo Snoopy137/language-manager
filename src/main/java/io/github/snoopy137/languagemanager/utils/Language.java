@@ -1,6 +1,23 @@
 package io.github.snoopy137.languagemanager.utils;
 
 import io.github.snoopy137.languagemanager.annotations.IgnoreBind;
+import io.github.snoopy137.languagemanager.binding.CheckBoxBinder;
+import io.github.snoopy137.languagemanager.binding.ChoiceBoxBinder;
+import io.github.snoopy137.languagemanager.binding.ComboBoxBinder;
+import io.github.snoopy137.languagemanager.binding.ContextMenuBinder;
+import io.github.snoopy137.languagemanager.binding.ControlBinder;
+import io.github.snoopy137.languagemanager.binding.HyperlinkBinder;
+import io.github.snoopy137.languagemanager.binding.LabeledBinder;
+import io.github.snoopy137.languagemanager.binding.ListViewItemBinder;
+import io.github.snoopy137.languagemanager.binding.MenuBinder;
+import io.github.snoopy137.languagemanager.binding.MenuItemBinder;
+import io.github.snoopy137.languagemanager.binding.RadioButtonBinder;
+import io.github.snoopy137.languagemanager.binding.TabBinder;
+import io.github.snoopy137.languagemanager.binding.TextInputBinder;
+import io.github.snoopy137.languagemanager.binding.TitledPaneBinder;
+import io.github.snoopy137.languagemanager.binding.TooltipBinder;
+import io.github.snoopy137.languagemanager.binding.TreeItemBinder;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -9,38 +26,71 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Labeled;
-import javafx.scene.control.TextInputControl;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author alan Utility class to manage language settings and automatic UI
- * binding for JavaFX applications. This class allows setting the locale,
- * dynamically switching languages, and binding UI elements to corresponding
- * language keys in the resource bundle.
+ * Utility class to manage language settings and automatic UI binding for JavaFX
+ * applications. This class allows setting the locale, dynamically switching
+ * languages, and binding UI elements to corresponding language keys in the
+ * resource bundle.
+ *
+ * @author alan
  */
 @Slf4j
 public class Language {
 
-    private static ObjectProperty<ResourceBundle> bundleProperty;
+    private static final ObjectProperty<ResourceBundle> bundleProperty = new SimpleObjectProperty<>();
+    private static String baseName = "language";
+
+    private static final List<ControlBinder> BINDERS = List.of(
+            new LabeledBinder(),
+            new TextInputBinder(),
+            new MenuItemBinder(),
+            new TabBinder(),
+            new TooltipBinder(),
+            new TitledPaneBinder(),
+            new TreeItemBinder(),
+            new ContextMenuBinder(),
+            new CheckBoxBinder(),
+            new RadioButtonBinder(),
+            new HyperlinkBinder(),
+            new MenuBinder(),
+            new ListViewItemBinder(),
+            new ComboBoxBinder(),
+            new ChoiceBoxBinder()
+    );
 
     /**
      * Gets the current resource bundle being used for language translations.
      *
      * @return the current resource bundle.
      */
-    public static ResourceBundle getBundle() throws MissingResourceException {
-        try {
-            bundleProperty = new SimpleObjectProperty<>(ResourceBundle.getBundle("language", Locale.getDefault()));
-            System.out.println(bundleProperty.get().getLocale());
-            return bundleProperty.get();
-        } catch (MissingResourceException e) {
-            log.warn("""
+    public static ResourceBundle getBundle() {
+        ResourceBundle bundle = bundleProperty.get();
+        if (bundle == null) {
+            try {
+                bundle = ResourceBundle.getBundle(baseName, Locale.getDefault());
+                bundleProperty.set(bundle);
+            } catch (MissingResourceException e) {
+                log.warn("""
             Failed to load the properties file.
             Make sure a valid resource bundle exists in 'src/main/resources'.
             Returning null. UI may not display localized text.""");
-            return null;
+            }
         }
+        return bundle;
+    }
+
+    /**
+     * Sets a custom base name for the resource bundle. Must be called before
+     * setting the locale.
+     *
+     * @param name the new base name (e.g., "messages")
+     */
+    public static void setBaseName(String name) {
+        baseName = name;
+        // Clear the cached bundle so it reloads
+        bundleProperty.set(null);
     }
 
     /**
@@ -73,7 +123,7 @@ public class Language {
                 return bundle.getString(key);
             } else {
                 log.warn("Missing key '{}' in resource bundle", key);
-                return optional;  // Returning the key itself in case of missing translation
+                return optional;  // Returning the original text property itself in case of missing translation
             }
         }, bundleProperty);
     }
@@ -90,7 +140,7 @@ public class Language {
     public static void setLocale(Locale locale) {
         try {
             log.info("Setting locale to: {}", locale);
-            ResourceBundle newBundle = ResourceBundle.getBundle("language", locale);
+            ResourceBundle newBundle = ResourceBundle.getBundle(baseName, locale);
             bundleProperty.set(newBundle);
             log.info("Locale set successfully");
         } catch (Exception e) {
@@ -150,17 +200,102 @@ public class Language {
                     }
                 }
 
-                if (control instanceof Labeled labeled) {
-                    log.debug("Binding text property of labeled control '{}'", key);
-                    labeled.textProperty().bind(Language.bind(key, labeled.getText()));
-                } else if (control instanceof TextInputControl input) {
-                    log.debug("Binding promptText property of TextInputControl '{}'", key + ".prompt");
-                    input.promptTextProperty().bind(Language.bind(key + ".prompt", input.getText()));
+                boolean bound = false;
+                for (ControlBinder binder : BINDERS) {
+                    if (binder.supports(control)) {
+                        binder.bind(control, key);
+                        bound = true;
+                        break;
+                    }
+                }
+                if (!bound) {
+                    log.debug("No binder found for control type: {}", control.getClass().getName());
                 }
 
             } catch (IllegalAccessException e) {
                 log.error("Failed to bind control '{}'", field.getName(), e);
             }
+        }
+    }
+
+    /**
+     * Retrieves the translated string for the specified key from the current
+     * resource bundle. If the key does not exist or the bundle is not loaded,
+     * the provided fallback string will be returned instead.
+     * <p>
+     * This method is useful when an immediate, non-observable translation is
+     * required (e.g., for static content or initial values).
+     *
+     * @param key the key to look up in the resource bundle.
+     * @param fallback the fallback string to return if the key is missing or
+     * the bundle is not available.
+     * @return the translated string if available, or the fallback value
+     * otherwise.
+     */
+    public static String get(String key, String fallback) {
+        ResourceBundle bundle = bundleProperty.get();
+        if (bundle != null && bundle.containsKey(key)) {
+            log.debug("Found key '{}' in bundle", key);
+            return bundle.getString(key);
+        } else {
+            log.warn("Missing key '{}' in resource bundle", key);
+            return fallback;
+        }
+    }
+
+    /**
+     * Automatically binds a single UI control to the corresponding value in the
+     * current resource bundle.
+     * <p>
+     * This method is useful when you create controls dynamically at runtime
+     * (instead of declaring them as fields in a controller) and still want to
+     * automatically bind their text or promptText properties.
+     * </p>
+     *
+     * <p>
+     * The key used for the binding will be the control's {@code id} property.
+     * Therefore, make sure the control has its {@code id} set appropriately.
+     * </p>
+     *
+     * @param control the UI control to bind (e.g., {@code Label},
+     * {@code Button}, {@code TextField}, etc.).
+     */
+    public static void autoBindField(Object control) {
+        if (control == null) {
+            log.warn("Control is null, skipping auto-bind");
+            return;
+        }
+
+        // Attempt to get the ID if the control has one
+        String key = null;
+
+        try {
+            var idProperty = control.getClass().getMethod("getId");
+            Object idValue = idProperty.invoke(control);
+            if (idValue instanceof String id && !id.isEmpty()) {
+                key = id;
+            }
+        } catch (ReflectiveOperationException e) {
+            log.warn("Control of type '{}' does not have an 'id' property, or failed to access it", control.getClass().getName());
+        }
+
+        if (key == null) {
+            log.warn("Unable to determine binding key for control '{}'. Make sure it has a non-empty 'id'.", control.getClass().getName());
+            return;
+        }
+
+        boolean bound = false;
+        for (ControlBinder binder : BINDERS) {
+            if (binder.supports(control)) {
+                binder.bind(control, key);
+                bound = true;
+                log.debug("Successfully auto-bound control '{}' with key '{}'", control.getClass().getName(), key);
+                break;
+            }
+        }
+
+        if (!bound) {
+            log.debug("No binder found for control type: {}", control.getClass().getName());
         }
     }
 }
