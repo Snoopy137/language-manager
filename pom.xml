@@ -4,7 +4,7 @@
 
     <groupId>io.github.snoopy137</groupId>
     <artifactId>language-manager</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
     <name>Language Manager</name>
     <description>JavaFX library for dynamic language switching</description>
