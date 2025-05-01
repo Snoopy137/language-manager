@@ -187,7 +187,10 @@ public class Language {
             field.setAccessible(true);
             try {
                 Object control = field.get(controller);
-                if (control == null) continue;
+                if (control == null) {
+                    log.warn("null controls cannot be bind, initialize your control before autobinding");
+                    continue;
+                }
 
                 // Default key: field name
                 String key = field.getName();
@@ -260,14 +263,11 @@ public class Language {
      * @param control the UI control to bind (e.g., {@code Label},
      * {@code Button}, {@code TextField}, etc.).
      */
-    public static void autoBindField(Object control) {
+    public static void autoBindField(Object control, String key) {
         if (control == null) {
             log.warn("Control is null, skipping auto-bind");
             return;
         }
-
-        // Attempt to get the ID if the control has one
-        String key = null;
 
         try {
             var idProperty = control.getClass().getMethod("getId");
