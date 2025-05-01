@@ -250,7 +250,7 @@ Missing key 'submitButton' in resource bundle
 
 Language Manager leverages ResourceBundle, SimpleObjectProperty, and Bindings to keep text in sync with the selected locale — all while avoiding the need to reinitialize scenes.
 <a id="license" name="license"></a>
-📄 License
+## 📄 License
 
 MIT License
 
