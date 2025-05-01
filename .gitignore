@@ -1,6 +1,7 @@
 # Ignore target directory (build output)
 target/
 src/main/resources/META-INF/
+upload/
 # Ignore IDE specific files
 nbactions.xml
 nb-configuration.xml
