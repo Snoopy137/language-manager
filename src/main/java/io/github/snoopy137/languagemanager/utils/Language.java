@@ -269,18 +269,8 @@ public class Language {
             return;
         }
 
-        try {
-            var idProperty = control.getClass().getMethod("getId");
-            Object idValue = idProperty.invoke(control);
-            if (idValue instanceof String id && !id.isEmpty()) {
-                key = id;
-            }
-        } catch (ReflectiveOperationException e) {
-            log.warn("Control of type '{}' does not have an 'id' property, or failed to access it", control.getClass().getName());
-        }
-
-        if (key == null) {
-            log.warn("Unable to determine binding key for control '{}'. Make sure it has a non-empty 'id'.", control.getClass().getName());
+        if (key.isBlank() || key == null) {
+            log.error("no key was provided, binding cannot be complete");
             return;
         }
 

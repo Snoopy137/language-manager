@@ -4,7 +4,7 @@
 
     <groupId>io.github.snoopy137</groupId>
     <artifactId>language-manager</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <packaging>jar</packaging>
     <name>Language Manager</name>
     <description>JavaFX library for dynamic language switching</description>
@@ -12,11 +12,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
-        <javafx.version>22</javafx.version>
-        <attach.version>4.0.22</attach.version>
-        <gluonfx.plugin.version>1.0.23</gluonfx.plugin.version>
+        <javafx.version>23.0.2</javafx.version>
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <mainClassName>io.github.snoopy137.languagemanager.LanguageManager</mainClassName>
+        <maven.compiler.proc>full</maven.compiler.proc>
     </properties>
     <url>https://github.com/Snoopy137/language-manager</url>
 
@@ -45,11 +44,6 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
@@ -88,7 +82,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.14.0</version>
             </plugin>
 
             <plugin>
