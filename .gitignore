@@ -5,6 +5,7 @@ upload/
 # Ignore IDE specific files
 nbactions.xml
 nb-configuration.xml
+nextfeatures.txt
 
 # Ignore Maven-specific files
 *.log

@@ -17,10 +17,12 @@ import io.github.snoopy137.languagemanager.binding.TextInputBinder;
 import io.github.snoopy137.languagemanager.binding.TitledPaneBinder;
 import io.github.snoopy137.languagemanager.binding.TooltipBinder;
 import io.github.snoopy137.languagemanager.binding.TreeItemBinder;
+import io.github.snoopy137.languagemanager.listener.LocaleChangeListener;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
@@ -41,6 +43,7 @@ public class Language {
 
     private static final ObjectProperty<ResourceBundle> bundleProperty = new SimpleObjectProperty<>();
     private static String baseName = "language";
+    private static final List<LocaleChangeListener> localeChangeListeners = new CopyOnWriteArrayList<>();
 
     private static final List<ControlBinder> BINDERS = List.of(
             new LabeledBinder(),
@@ -111,6 +114,8 @@ public class Language {
      *
      * @param key the field ID (or key) to look up in the resource bundle. This
      * is typically the `fx:id` of a UI element.
+     * @param optional the key used if the original one isn't present in the
+     * bundle
      * @return a `StringBinding` that can be used to bind to a UI element's text
      * property.
      */
@@ -129,6 +134,41 @@ public class Language {
     }
 
     /**
+     * Registers a new listener to be notified when the locale changes.
+     *
+     * @param listener the LocaleChangeListener to register
+     */
+    public static void addLocaleChangeListener(LocaleChangeListener listener) {
+        if (listener != null) {
+            localeChangeListeners.add(listener);
+        }
+    }
+
+    /**
+     * Unregisters a previously registered locale change listener.
+     *
+     * @param listener the listener to remove
+     */
+    public static void removeLocaleChangeListener(LocaleChangeListener listener) {
+        localeChangeListeners.remove(listener);
+    }
+
+    /**
+     * Notifies all registered listeners of the new resource bundle.
+     *
+     * @param newBundle the new ResourceBundle that has been loaded
+     */
+    private static void notifyListeners(ResourceBundle newBundle) {
+        localeChangeListeners.forEach(listener -> {
+            try {
+                listener.onLocaleChange(newBundle);
+            } catch (Exception e) {
+                log.error("Failed to notify locale change listener", e);
+            }
+        });
+    }
+
+    /**
      * Sets the current locale and updates the resource bundle for the new
      * locale. This method loads a new resource bundle based on the provided
      * locale and updates the `bundleProperty` to reflect the new bundle. It
@@ -143,6 +183,7 @@ public class Language {
             ResourceBundle newBundle = ResourceBundle.getBundle(baseName, locale);
             bundleProperty.set(newBundle);
             log.info("Locale set successfully");
+            notifyListeners(newBundle);
         } catch (Exception e) {
             log.error("""
                       Failed to load resource bundle for locale: {}.
@@ -212,7 +253,7 @@ public class Language {
                     }
                 }
                 if (!bound) {
-                    log.debug("No binder found for control type: {}", control.getClass().getName());
+                    log.debug("Bound control '{}' ({}) with key '{}'", field.getName(), control.getClass().getSimpleName(), key);
                 }
 
             } catch (IllegalAccessException e) {
