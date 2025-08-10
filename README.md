@@ -52,14 +52,14 @@ Add the following to your `pom.xml`:
 <dependency>
     <groupId>io.github.snoopy137</groupId>
     <artifactId>language-manager</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 ### Gradle
 Add this to your `build.gradle`:
 ```groovy
 dependencies {
-    implementation 'io.github.snoopy137:language-manager:1.1.1'
+    implementation 'io.github.snoopy137:language-manager:1.1.2'
 }
 ```
 <a id="file-structure" name="file-structure"></a>
